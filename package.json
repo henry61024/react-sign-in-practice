@@ -21,9 +21,12 @@
     "test": "react-app-rewired test",
     "lint:es": "./node_modules/.bin/eslint --ext=ts --ext=tsx --ext=js --ext=jsx . --ignore-path .eslintignore",
     "lint:style": "./node_modules/.bin/stylelint --config=.stylelintrc.json '**/*.css' '**/*.scss' '**/*.sass' '**/*.less'",
+    "lint": "run-s lint:*",
     "fix:lint:es": "./node_modules/.bin/eslint --ext=ts --ext=tsx --ext=js --ext=jsx . --ignore-path .eslintignore --fix",
     "fix:lint:style": "./node_modules/.bin/stylelint --config=.stylelintrc.json '**/*.css' '**/*.scss' '**/*.sass' '**/*.less' --fix",
+    "fix:lint": "run-s fix:lint:*",
     "fix:prettier": "./node_modules/.bin/prettier --config .prettierrc.json --write '**/*.{ts, tsx, js,jsx,scss,css}'",
+    "fix": "run-s fix:*",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
