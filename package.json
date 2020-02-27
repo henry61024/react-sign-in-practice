@@ -20,7 +20,9 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "lint:es": "./node_modules/.bin/eslint --ext=ts --ext=tsx --ext=js --ext=jsx . --ignore-path .eslintignore",
+    "lint:style": "./node_modules/.bin/stylelint --config=.stylelintrc.json '**/*.css' '**/*.scss' '**/*.sass' '**/*.less'",
     "fix:lint:es": "./node_modules/.bin/eslint --ext=ts --ext=tsx --ext=js --ext=jsx . --ignore-path .eslintignore --fix",
+    "fix:lint:style": "./node_modules/.bin/stylelint --config=.stylelintrc.json '**/*.css' '**/*.scss' '**/*.sass' '**/*.less' --fix",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -41,6 +43,12 @@
   "devDependencies": {
     "customize-cra": "^0.9.1",
     "eslint": "^6.8.0",
-    "react-app-rewired": "^2.1.5"
+    "react-app-rewired": "^2.1.5",
+    "stylelint": "^13.2.0",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.0.0",
+    "stylelint-webpack-plugin": "^1.2.3"
   }
 }

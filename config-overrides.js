@@ -1,6 +1,10 @@
 const { override } = require("customize-cra");
+const StylelintPlugin = require("stylelint-webpack-plugin");
 
-module.exports = override(useEslintRc(".eslintrc.json", { fix: true }));
+module.exports = override(
+  useEslintRc(".eslintrc.json", { fix: true }),
+  useStylelintRc(".stylelintrc.json", { fix: true })
+);
 
 // use self-made useEslintRc because we want to add options to eslint-loader
 function useEslintRc(configFile, options) {
@@ -24,6 +28,19 @@ function useEslintRc(configFile, options) {
     );
     config.module.rules = rules;
 
+    return config;
+  };
+}
+
+function useStylelintRc(configFile, options) {
+  return config => {
+    config.plugins.push(
+      new StylelintPlugin({
+        configFile,
+        files: ["**/*.css", "**/*.sass", "**/*.scss", "**/*.less"],
+        ...options
+      })
+    );
     return config;
   };
 }

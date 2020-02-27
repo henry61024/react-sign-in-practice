@@ -1,0 +1,23 @@
+# dependencies
+/node_modules
+
+# assets
+/public
+/assets
+
+# testing
+/coverage
+
+# production
+/build
+/static
+
+# storybook
+/storybook-static
+/out[0-9]*
+
+# js related files, remove because stylelint isn't doing great in these files
+**/*.js
+**/*.jsx
+**/*.ts
+**/*.tsx
