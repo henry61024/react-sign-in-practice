@@ -29,6 +29,11 @@
     "fix": "run-s fix:*",
     "eject": "react-scripts eject"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -47,6 +52,8 @@
   "devDependencies": {
     "customize-cra": "^0.9.1",
     "eslint": "^6.8.0",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
     "prettier": "1.19.1",
     "react-app-rewired": "^2.1.5",
     "stylelint": "^13.2.0",

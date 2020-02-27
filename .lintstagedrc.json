@@ -1,0 +1,5 @@
+{
+  "**/*.{js,jsx,ts,tsx}": ["npm run fix:lint:es", "prettier --write"],
+  "**/*.{css,scss,sass,less}": ["npm run fix:lint:style", "prettier --write"],
+  "**/*.{json,md}": ["prettier --write"]
+}
