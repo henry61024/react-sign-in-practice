@@ -1,24 +1,28 @@
 import React from 'react';
-import logo from '../../assets/logo.svg';
-import './index.css';
+import { Switch, Route } from 'react-router-dom';
+import PrivateRouter from '../../containers/PrivateRouter/';
+import LoginPage from '../Login/';
+import ProtectedPage from '../Protected/';
+import PublicPage from '../Public/';
+import AuthHeader from '../../containers/AuthHeader/';
+import AppMenu from '../../containers/AppMenu';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AuthHeader></AuthHeader>
+      <AppMenu></AppMenu>
+      <Switch>
+        <Route path="/login">
+          <LoginPage></LoginPage>
+        </Route>
+        <Route path="/public">
+          <PublicPage></PublicPage>
+        </Route>
+        <PrivateRouter path="/protected">
+          <ProtectedPage></ProtectedPage>
+        </PrivateRouter>
+      </Switch>
     </div>
   );
 }
