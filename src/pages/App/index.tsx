@@ -6,6 +6,7 @@ import ProtectedPage from '../Protected/';
 import PublicPage from '../Public/';
 import AuthHeader from '../../containers/AuthHeader/';
 import AppMenu from '../../containers/AppMenu';
+import { connect } from 'react-redux';
 
 function App() {
   return (
@@ -27,4 +28,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect()(App);

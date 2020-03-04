@@ -1,5 +1,6 @@
 import { Auth } from '../index';
-const sleep = (deplay: number) => setTimeout(() => Promise.resolve(), deplay);
+const sleep = (delay: number) =>
+  new Promise((resolve, reject) => setTimeout(resolve, delay));
 
 const auth: any = jest.genMockFromModule('../index.ts');
 let mockedUserName: string;

@@ -1,21 +1,27 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import auth from '../../services/Auth/';
 import GuestHeader from '../../components/GuestHeader';
 import UserHeader from '../../components/UserHeader';
+import { connect } from 'react-redux';
+import { signOut } from '../../actions';
 
-const AuthHeader: React.FC = () => {
-  const history = useHistory();
-  const signOut = async () => {
-    await auth.signOut();
-    history.push('/');
-  };
+const mapDispatchToProps = (dispatch: any) => ({
+  signOut: () => dispatch(signOut()),
+});
 
-  return auth.isAuthenticated ? (
+const mapStateToProps = (state: any): { isAuthenticated: boolean } => ({
+  isAuthenticated:
+    state.auth.status === 'signinSuccess' || state.auth.status === 'signouting',
+});
+
+const AuthHeader: React.FC<{ isAuthenticated: boolean; signOut: any }> = ({
+  isAuthenticated,
+  signOut,
+}) => {
+  return isAuthenticated ? (
     <UserHeader onSignOut={signOut}></UserHeader>
   ) : (
     <GuestHeader></GuestHeader>
   );
 };
 
-export default AuthHeader;
+export default connect(mapStateToProps, mapDispatchToProps)(AuthHeader);

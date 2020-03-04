@@ -1,28 +1,25 @@
-const sleep = (deplay: number) => setTimeout(() => Promise.resolve(), deplay);
+const sleep = (delay: number) =>
+  new Promise((resolve, reject) => setTimeout(resolve, delay));
 
 const correctUserName = 'guest';
 const correctPassword = 'guest';
 
 export interface Auth {
-  isAuthenticated: boolean;
-  authenticate: (username: string, password: string) => Promise<void>;
+  authenticate: (...args: any[]) => any;
   signOut: () => Promise<void>;
 }
 
 const auth: Auth = {
-  isAuthenticated: false,
   async authenticate(username: string, password: string) {
-    await sleep(100);
+    await sleep(1000);
     if (username === correctUserName && password === correctPassword) {
-      auth.isAuthenticated = true;
+      return Promise.resolve();
     } else {
-      auth.isAuthenticated = false;
       return Promise.reject();
     }
   },
   async signOut() {
-    await sleep(100);
-    auth.isAuthenticated = false;
+    await sleep(1000);
   },
 };
 

@@ -1,13 +1,26 @@
 import React from 'react';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
-import auth from '../../services/Auth';
+import { connect } from 'react-redux';
 
-const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
+interface PrivateRouteProps extends RouteProps {
+  isAuthenticated: boolean;
+}
+
+const mapStateToProps = (state: any): { isAuthenticated: boolean } => ({
+  isAuthenticated:
+    state.auth.status === 'signinSuccess' || state.auth.status === 'signouting',
+});
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  isAuthenticated,
+  children,
+  ...rest
+}) => {
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        auth.isAuthenticated ? (
+        isAuthenticated ? (
           children
         ) : (
           <Redirect
@@ -22,4 +35,4 @@ const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
   );
 };
 
-export default PrivateRoute;
+export default connect(mapStateToProps)(PrivateRoute);
