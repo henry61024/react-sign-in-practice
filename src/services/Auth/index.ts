@@ -5,7 +5,7 @@ const correctUserName = 'guest';
 const correctPassword = 'guest';
 
 export interface Auth {
-  authenticate: (...args: any[]) => any;
+  authenticate: (username: string, password: string) => Promise<string | void>;
   signOut: () => Promise<void>;
 }
 
@@ -15,7 +15,7 @@ const auth: Auth = {
     if (username === correctUserName && password === correctPassword) {
       return Promise.resolve();
     } else {
-      return Promise.reject();
+      return Promise.reject('Incorrect username or password.');
     }
   },
   async signOut() {

@@ -1,80 +1,90 @@
 import React from 'react';
+import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import { FORM_ERROR, SubmissionErrors, FormApi } from 'final-form';
+import MakeAsyncFunction from 'react-redux-promise-listener';
+import SignInForm from '../../components/SignInForm';
+import { promiseListener } from '../../store';
+import { openSignInForm, signInCancel } from '../../actions';
 import {
-  openModal,
   SIGN_IN_REQUEST,
   SIGN_IN_SUCCESS,
   SIGN_IN_FAIL,
-  signInCancel,
-} from '../../actions/';
-import styled from 'styled-components';
-import MakeAsyncFunction from 'react-redux-promise-listener';
-import SignInForm from '../../components/SignInForm/';
-import { promiseListener } from '../..';
-import { FORM_ERROR, SubmissionErrors, FormApi, AnyObject } from 'final-form';
+  SignInFailAction,
+  State,
+  Payload,
+} from '../../types';
+import { AnyObject } from 'react-final-form';
 
 const LoginContentDiv = styled.div`
   margin-bottom: 5px;
 `;
 
-const mapDispatchToProps = (dispatch: any) => ({
-  openModal: () => dispatch(openModal()),
-  closeModal: () => dispatch(signInCancel()),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  // MakeAsyncFunction will dispatch signin action, so no need to dispatch ourselves
+  openSignInForm: () => dispatch(openSignInForm()),
+  cancelSignIn: () => dispatch(signInCancel()),
 });
 
-const mapStateToProps = (state: any): { isModalOpened: boolean } => ({
-  isModalOpened: state.modal,
+const mapStateToProps = (state: State): { isFormOpened: boolean } => ({
+  isFormOpened: state.signInForm.isOpen,
+});
+
+type AsyncSignIn = (
+  payload: Payload,
+  form: FormApi<object>
+) => Promise<SubmissionErrors>;
+
+const asyncSignInResolver = (asyncSignIn: AsyncSignIn) => (
+  payload: AnyObject,
+  form: FormApi
+) => asyncSignIn(payload as Payload, form).catch(mapToFormError);
+
+const mapToFormError = ({ error }: { error: string }) => ({
+  [FORM_ERROR]: error,
+});
+
+const setAsyncFunctionPayload = (action: Action, payload: AnyObject) => ({
+  ...action,
+  ...payload,
 });
 
 interface LoginProps {
   // MakeAsyncFunction will dispatch signin action, so no need to add signin prop
-  isModalOpened: boolean;
-  openModal: () => {};
-  closeModal: () => {};
+  isFormOpened: boolean;
+  openSignInForm: () => {};
+  cancelSignIn: () => {};
 }
 
 const Login: React.FC<LoginProps> = ({
-  isModalOpened,
-  openModal,
-  closeModal,
-}) => {
-  return (
-    <div>
-      <LoginContentDiv>
-        You must sign in to view the page at /protected
-      </LoginContentDiv>
-      <button onClick={openModal}>Sign In</button>
-      {isModalOpened && (
-        <MakeAsyncFunction
-          listener={promiseListener}
-          start={SIGN_IN_REQUEST}
-          resolve={SIGN_IN_SUCCESS}
-          reject={SIGN_IN_FAIL}
-          getError={(action: AnyObject) => ({ error: action.error })}
-        >
-          {(
-            asyncSignIn: (
-              payload: object,
-              form: FormApi<object>
-            ) => Promise<SubmissionErrors>
-          ) => (
-            <SignInForm
-              onSignIn={(payload, form) =>
-                asyncSignIn(payload, form).catch(
-                  ({ error }: { error: string }) => {
-                    return {
-                      [FORM_ERROR]: error,
-                    };
-                  }
-                )
-              }
-              onClose={closeModal}
-            ></SignInForm>
-          )}
-        </MakeAsyncFunction>
-      )}
-    </div>
-  );
-};
+  isFormOpened,
+  openSignInForm,
+  cancelSignIn,
+}) => (
+  <div>
+    <LoginContentDiv>
+      You must sign in to view the page at /protected
+    </LoginContentDiv>
+    <button onClick={openSignInForm}>Sign In</button>
+    {isFormOpened && (
+      <MakeAsyncFunction
+        listener={promiseListener}
+        start={SIGN_IN_REQUEST}
+        resolve={SIGN_IN_SUCCESS}
+        reject={SIGN_IN_FAIL}
+        setPayload={setAsyncFunctionPayload}
+        getError={(action: SignInFailAction) => ({ error: action.error })}
+      >
+        {(asyncSignIn: AsyncSignIn) => (
+          <SignInForm
+            onSignIn={asyncSignInResolver(asyncSignIn)}
+            onClose={cancelSignIn}
+          ></SignInForm>
+        )}
+      </MakeAsyncFunction>
+    )}
+  </div>
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

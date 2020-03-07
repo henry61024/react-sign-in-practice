@@ -6,9 +6,8 @@ import ProtectedPage from '../Protected/';
 import PublicPage from '../Public/';
 import AuthHeader from '../../containers/AuthHeader/';
 import AppMenu from '../../containers/AppMenu';
-import { connect } from 'react-redux';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <AuthHeader></AuthHeader>
@@ -26,6 +25,6 @@ function App() {
       </Switch>
     </div>
   );
-}
+};
 
-export default connect()(App);
+export default App;
