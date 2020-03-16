@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { FORM_ERROR, SubmissionErrors, FormApi } from 'final-form';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import SignInForm from '../../components/SignInForm';
-import { promiseListener } from '../../store';
-import { openSignInForm, signInCancel } from '../../actions';
+import store, { promiseListener } from '../../store';
+import { openSignInForm, signInCancel, closeSignInForm } from '../../actions';
 import {
   SIGN_IN_REQUEST,
   SIGN_IN_SUCCESS,
@@ -14,6 +14,7 @@ import {
   SignInFailAction,
   State,
   Payload,
+  SIGN_IN_ING_STATUS,
 } from '../../types';
 import { AnyObject } from 'react-final-form';
 
@@ -24,7 +25,11 @@ const LoginContentDiv = styled.div`
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   // MakeAsyncFunction will dispatch signin action, so no need to dispatch ourselves
   openSignInForm: () => dispatch(openSignInForm()),
-  cancelSignIn: () => dispatch(signInCancel()),
+  cancelSignIn: () => {
+    const isSignIning = store.getState().auth.status === SIGN_IN_ING_STATUS;
+    const cancel = isSignIning ? signInCancel : closeSignInForm;
+    return dispatch(cancel());
+  },
 });
 
 const mapStateToProps = (state: State): { isFormOpened: boolean } => ({
