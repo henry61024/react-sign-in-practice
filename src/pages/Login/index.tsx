@@ -62,7 +62,7 @@ interface LoginProps {
   cancelSignIn: () => {};
 }
 
-const Login: React.FC<LoginProps> = ({
+export const Login: React.FC<LoginProps> = ({
   isFormOpened,
   openSignInForm,
   cancelSignIn,

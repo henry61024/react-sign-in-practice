@@ -26,7 +26,10 @@ const mapStateToProps = (state: State): { isAuthenticated: boolean } => ({
     state.auth.status === SIGN_OUT_ING_STATUS,
 });
 
-const AuthHeader: React.FC<AuthHeaderProps> = ({ isAuthenticated, signOut }) =>
+export const AuthHeader: React.FC<AuthHeaderProps> = ({
+  isAuthenticated,
+  signOut,
+}) =>
   isAuthenticated ? (
     <UserHeader onSignOut={signOut}></UserHeader>
   ) : (

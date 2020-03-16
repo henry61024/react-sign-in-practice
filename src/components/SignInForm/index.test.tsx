@@ -12,11 +12,11 @@ const success = jest.fn();
 const fail = jest
   .fn()
   .mockReturnValue({ [FORM_ERROR]: 'Incorrect username or password.' });
-const fakeClose = jest.fn();
+const mockedClose = jest.fn();
 
 test('renders username form', () => {
   const { getByLabelText, getByPlaceholderText } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const userNameLabel = getByLabelText('Username');
   const userNameInput = getByPlaceholderText('Enter username');
@@ -26,7 +26,7 @@ test('renders username form', () => {
 
 test('renders password form', () => {
   const { getByLabelText, getByPlaceholderText } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const passwordLabel = getByLabelText('Password');
   const passwordInput = getByPlaceholderText('Enter password');
@@ -37,7 +37,7 @@ test('renders password form', () => {
 test('renders sign in button', () => {
   const signInButtonPosition = 1;
   const { getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const signInButton = getAllByRole('button')[signInButtonPosition];
   expect(signInButton).toHaveTextContent('Sign In');
@@ -48,7 +48,7 @@ test('renders sign in button', () => {
 test('renders cancel button', () => {
   const cancelButtonPosition = 0;
   const { getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const cancelButton = getAllByRole('button')[cancelButtonPosition];
   expect(cancelButton).toHaveTextContent('Cancel');
@@ -57,7 +57,7 @@ test('renders cancel button', () => {
 
 test('renders warning when blur username', async () => {
   const { getByText, getByPlaceholderText } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const userNameInput = getByPlaceholderText('Enter username');
   fireEvent.blur(userNameInput);
@@ -69,7 +69,7 @@ test('renders warning when blur username', async () => {
 
 test('renders warning when blur password', async () => {
   const { getByText, getByPlaceholderText } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const passwordInput = getByPlaceholderText('Enter password');
   fireEvent.blur(passwordInput);
@@ -81,7 +81,7 @@ test('renders warning when blur password', async () => {
 
 test('renders warnings when blur username and password', async () => {
   const { getAllByText, getByPlaceholderText } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const userNameInput = getByPlaceholderText('Enter username');
   const passwordInput = getByPlaceholderText('Enter password');
@@ -96,17 +96,17 @@ test('renders warnings when blur username and password', async () => {
 test('on-close triggered when click cancel', () => {
   const cancelButtonPosition = 0;
   const { getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const cancelButton = getAllByRole('button')[cancelButtonPosition];
   fireEvent.click(cancelButton);
-  expect(fakeClose).toBeCalledTimes(1);
+  expect(mockedClose).toBeCalledTimes(1);
 });
 
 test('disables button if username empty', () => {
   const signInButtonPosition = 1;
   const { getByPlaceholderText, getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const passwordInput = getByPlaceholderText('Enter password');
   const signInButton = getAllByRole('button')[signInButtonPosition];
@@ -117,7 +117,7 @@ test('disables button if username empty', () => {
 test('disables button if password empty', () => {
   const signInButtonPosition = 1;
   const { getByPlaceholderText, getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const usernameInput = getByPlaceholderText('Enter username');
   const signInButton = getAllByRole('button')[signInButtonPosition];
@@ -128,7 +128,7 @@ test('disables button if password empty', () => {
 test('renders warning when login fail', async () => {
   const signInButtonPosition = 1;
   const { getByText, getByPlaceholderText, getAllByRole } = render(
-    <SignInForm onSignIn={fail} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={fail} onClose={mockedClose}></SignInForm>
   );
   const userNameInput = getByPlaceholderText('Enter username');
   const passwordInput = getByPlaceholderText('Enter password');
@@ -146,7 +146,7 @@ test('renders warning when login fail', async () => {
 test('no warning rendered when login success', async () => {
   const signInButtonPosition = 1;
   const { queryByText, getByPlaceholderText, getAllByRole } = render(
-    <SignInForm onSignIn={success} onClose={fakeClose}></SignInForm>
+    <SignInForm onSignIn={success} onClose={mockedClose}></SignInForm>
   );
   const userNameInput = getByPlaceholderText('Enter username');
   const passwordInput = getByPlaceholderText('Enter password');

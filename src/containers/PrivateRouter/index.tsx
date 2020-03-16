@@ -18,7 +18,7 @@ const mapStateToProps = (state: any): { isAuthenticated: boolean } => ({
     state.auth.status === SIGN_OUT_FAIL_STATUS,
 });
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({
+export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   isAuthenticated,
   children,
   ...rest

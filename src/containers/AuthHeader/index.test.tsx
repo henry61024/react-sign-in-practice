@@ -1,26 +1,94 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import { render, fireEvent, waitForElement } from '@testing-library/react';
-import auth from '../../services/Auth';
-import AuthHeader from './index';
-import { MockedAuth } from '../../services/Auth/__mocks__/index';
+import { fireEvent, render } from '@testing-library/react';
+import AuthHeaderContainer, { AuthHeader } from './index';
+import { renderWithReduxRouter } from '../../utils';
+import {
+  SIGN_IN_INITIAL_STATUS,
+  SIGN_IN_SUCCESS_STATUS,
+  SIGN_OUT_ING_STATUS,
+} from '../../types';
 
 jest.mock('../../services/Auth');
 
-test('renders guest header before signed in', () => {
-  const { getByText } = render(<AuthHeader></AuthHeader>, {
-    wrapper: MemoryRouter,
-  });
+/**
+ * ==========================================
+ * component
+ * ==========================================
+ */
+
+test('renders guest header if is not authenticated', () => {
+  const mockSignOut = jest.fn();
+  const { getByText } = render(
+    <AuthHeader isAuthenticated={false} signOut={mockSignOut}></AuthHeader>
+  );
+
   const guestContent = getByText('You are not signed in.');
   expect(guestContent).toBeInTheDocument();
 });
 
-test('renders user header after signed in', async () => {
-  (auth as MockedAuth).__setAuthInfo('test', 'test');
-  await auth.authenticate('test', 'test');
-  const { getByText, getByRole } = render(<AuthHeader></AuthHeader>, {
-    wrapper: MemoryRouter,
-  });
+test('renders user header if is authenticated', () => {
+  const mockedSignOut = jest.fn();
+  const { getByText, getByRole } = render(
+    <AuthHeader isAuthenticated={true} signOut={mockedSignOut}></AuthHeader>
+  );
+
+  const userContent = getByText('Welcome!');
+  const signOutButton = getByRole('button');
+  expect(userContent).toBeInTheDocument();
+  expect(signOutButton).toHaveTextContent('Sign out');
+});
+
+test('signout fires correctly', () => {
+  const mockedSignOut = jest.fn();
+  const { getByText, getByRole } = render(
+    <AuthHeader isAuthenticated={true} signOut={mockedSignOut}></AuthHeader>
+  );
+
+  const userContent = getByText('Welcome!');
+  const signOutButton = getByRole('button');
+  expect(userContent).toBeInTheDocument();
+  expect(signOutButton).toHaveTextContent('Sign out');
+  fireEvent.click(signOutButton);
+  expect(mockedSignOut).toBeCalledTimes(1);
+});
+
+/**
+ * ==========================================
+ * container
+ * ==========================================
+ */
+
+test('renders guest header before signed in', () => {
+  const { getByText } = renderWithReduxRouter(
+    <AuthHeaderContainer></AuthHeaderContainer>,
+    {
+      initialState: {
+        auth: {
+          status: SIGN_IN_INITIAL_STATUS,
+          username: null,
+          password: null,
+        },
+      },
+    }
+  );
+
+  const guestContent = getByText('You are not signed in.');
+  expect(guestContent).toBeInTheDocument();
+});
+
+test('renders user header if sign in succeeded', async () => {
+  const { getByText, getByRole } = renderWithReduxRouter(
+    <AuthHeaderContainer></AuthHeaderContainer>,
+    {
+      initialState: {
+        auth: {
+          status: SIGN_IN_SUCCESS_STATUS,
+          username: null,
+          password: null,
+        },
+      },
+    }
+  );
   const userContent = getByText('Welcome!');
   const signOutButton = getByRole('button');
   expect(userContent).toBeInTheDocument();
@@ -28,17 +96,25 @@ test('renders user header after signed in', async () => {
 });
 
 test('renders guest header after signed out', async () => {
-  (auth as MockedAuth).__setAuthInfo('test', 'test');
-  await auth.authenticate('test', 'test');
-  const { getByText, getByRole } = render(<AuthHeader></AuthHeader>, {
-    wrapper: MemoryRouter,
-  });
+  const { getByText, getByRole, store } = renderWithReduxRouter(
+    <AuthHeaderContainer></AuthHeaderContainer>,
+    {
+      initialState: {
+        auth: {
+          status: SIGN_IN_SUCCESS_STATUS,
+          username: null,
+          password: null,
+        },
+      },
+    }
+  );
   const signOutButton = getByRole('button');
   const userContent = getByText('Welcome!');
   expect(userContent).toBeInTheDocument();
   fireEvent.click(signOutButton);
-  const guestContent = await waitForElement(() =>
-    getByText('You are not signed in.')
-  );
-  expect(guestContent).toBeInTheDocument();
+  expect(store.getState().auth).toEqual({
+    status: SIGN_OUT_ING_STATUS,
+    username: null,
+    password: null,
+  });
 });
